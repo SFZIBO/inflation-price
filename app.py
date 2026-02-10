@@ -27,7 +27,7 @@ def load_models():
         model_dir = "model_deployment"
         
         if not os.path.exists(model_dir):
-            st.error(f"❌ Directory {model_dir} tidak ditemukan!")
+            st.error(f"Directory {model_dir} tidak ditemukan!")
             return None
         
 
@@ -52,7 +52,7 @@ def load_models():
         }
     
     except Exception as e:
-        st.error(f"❌ Error loading models: {str(e)}")
+        st.error(f"Error loading models: {str(e)}")
         return None
 
 # ------------------------------------------------------------
@@ -124,7 +124,7 @@ def evaluate_models(models):
         return metrics
     
     except Exception as e:
-        st.warning(f"⚠️ Tidak dapat mengevaluasi model: {str(e)}")
+        st.warning(f"Tidak dapat mengevaluasi model: {str(e)}")
         return None
 
 # ------------------------------------------------------------
@@ -132,7 +132,7 @@ def evaluate_models(models):
 # ------------------------------------------------------------
 def main():
     # Load models
-    with st.spinner("🔄 Loading models..."):
+    with st.spinner("Loading models..."):
         models = load_models()
     
     if models is None:
@@ -141,7 +141,7 @@ def main():
     # --------------------------------------------------------
     # HEADER
     # --------------------------------------------------------
-    st.title("📈 Prediksi Inflasi Bulanan 38 Provinsi Indonesia")
+    st.title("Prediksi Inflasi Bulanan 38 Provinsi Indonesia")
     st.markdown("**Menggunakan Support Vector Regression (SVR) dan Artificial Neural Network (ANN)**")
     st.divider()
     
@@ -149,12 +149,12 @@ def main():
     # SIDEBAR
     # --------------------------------------------------------
     with st.sidebar:
-        st.header("⚙️ Pengaturan Prediksi")
+        st.header("Pengaturan Prediksi")
         
         # Pilih Provinsi
         province_list = sorted(list(models['metadata']['province_mapping_reverse'].keys()))
         selected_province = st.selectbox(
-            "📍 Pilih Provinsi",
+            "Pilih Provinsi",
             options=province_list,
             index=province_list.index("JAWA BARAT") if "JAWA BARAT" in province_list else 0
         )
@@ -162,7 +162,7 @@ def main():
         # Pilih Subkategori
         subcategory_list = sorted(list(models['metadata']['subcategory_mapping_reverse'].keys()))
         selected_subcategory = st.selectbox(
-            "📋 Pilih Subkategori",
+            "Pilih Subkategori",
             options=subcategory_list,
             index=0  # Default "Total"
         )
@@ -170,7 +170,7 @@ def main():
         # Pilih Tahun
         current_year = datetime.now().year
         selected_year = st.selectbox(
-            "📅 Tahun",
+            "Tahun",
             options=list(range(2024, 2030)),
             index=list(range(2024, 2030)).index(current_year)
         )
@@ -179,7 +179,7 @@ def main():
         month_names = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
                        "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
         selected_month = st.selectbox(
-            "📆 Bulan",
+            "Bulan",
             options=month_names,
             index=datetime.now().month - 1 if datetime.now().year == selected_year else 0
         )
@@ -188,7 +188,7 @@ def main():
         st.divider()
         
         # Tombol Prediksi
-        if st.button("🔮 Prediksi Sekarang", type="primary", use_container_width=True):
+        if st.button("Prediksi Sekarang", type="primary", use_container_width=True):
             st.session_state['predict'] = True
             st.session_state['inputs'] = {
                 'province': selected_province,
@@ -204,23 +204,23 @@ def main():
     
     # Tab Navigation
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🎯 Prediksi", 
-        "📊 Perbandingan Model", 
-        "📈 Visualisasi", 
-        "ℹ️ Informasi"
+        "Prediksi", 
+        "Perbandingan Model", 
+        "Visualisasi", 
+        "Informasi"
     ])
     
     # --------------------------------------------------------
     # TAB 1: PREDIKSI
     # --------------------------------------------------------
     with tab1:
-        st.header("🎯 Hasil Prediksi Inflasi")
+        st.header("Hasil Prediksi Inflasi")
         
         if 'predict' in st.session_state and st.session_state['predict']:
             inputs = st.session_state['inputs']
             
             # Tampilkan input summary
-            with st.expander("📋 Detail Input Prediksi", expanded=True):
+            with st.expander("Detail Input Prediksi", expanded=True):
                 col1, col2, col3 = st.columns(3)
                 with col1:
                     st.metric("Provinsi", inputs['province'])
@@ -230,7 +230,7 @@ def main():
                     st.metric("Periode", f"{inputs['month']} {inputs['year']}")
             
             # Lakukan prediksi
-            with st.spinner("🔮 Memproses prediksi..."):
+            with st.spinner("Memproses prediksi..."):
                 results = predict_inflation(
                     models,
                     inputs['year'],
@@ -242,13 +242,13 @@ def main():
             st.divider()
             
             # Tampilkan hasil prediksi
-            st.subheader("📊 Hasil Prediksi dari Kedua Model")
+            st.subheader("Hasil Prediksi dari Kedua Model")
             
             col1, col2, col3 = st.columns(3)
             
             with col1:
                 st.metric(
-                    label="🤖 SVR (RBF Kernel)",
+                    label="SVR (RBF Kernel)",
                     value=f"{results['svr']:.4f}%",
                     delta=None,
                     help="Support Vector Regression dengan kernel RBF"
@@ -256,7 +256,7 @@ def main():
             
             with col2:
                 st.metric(
-                    label="🧠 ANN (MLP)",
+                    label="ANN (MLP)",
                     value=f"{results['ann']:.4f}%",
                     delta=None,
                     help="Artificial Neural Network dengan 2 hidden layers"
@@ -264,7 +264,7 @@ def main():
             
             with col3:
                 st.metric(
-                    label="⭐ Ensemble (Rata-rata)",
+                    label="Ensemble (Rata-rata)",
                     value=f"{results['ensemble']:.4f}%",
                     delta=None,
                     help="Rata-rata dari kedua model untuk hasil lebih robust"
@@ -273,21 +273,21 @@ def main():
             st.divider()
             
             # Interpretasi hasil
-            st.subheader("📝 Interpretasi")
+            st.subheader("Interpretasi")
             
             pred_value = results['ensemble']
             
             if pred_value > 0.5:
-                status = "🔴 **TINGGI** - Mengalami inflasi signifikan"
+                status = " **TINGGI** - Mengalami inflasi signifikan"
                 color = "#ff4444"
             elif pred_value > 0.1:
-                status = "🟠 **SEDANG** - Mengalami inflasi moderat"
+                status = " **SEDANG** - Mengalami inflasi moderat"
                 color = "#ff9800"
             elif pred_value > -0.1:
-                status = "🟢 **RENDAH/STABIL** - Inflasi sangat rendah atau stabil"
+                status = " **RENDAH/STABIL** - Inflasi sangat rendah atau stabil"
                 color = "#4caf50"
             else:
-                status = "🔵 **DEFLASI** - Mengalami penurunan harga"
+                status = " **DEFLASI** - Mengalami penurunan harga"
                 color = "#2196f3"
             
             st.markdown(f"""
@@ -301,13 +301,13 @@ def main():
             """, unsafe_allow_html=True)
             
         else:
-            st.info("👈 Silakan atur parameter di sidebar dan klik 'Prediksi Sekarang' untuk melihat hasil.")
+            st.info("Silakan atur parameter di sidebar dan klik 'Prediksi Sekarang' untuk melihat hasil.")
     
     # --------------------------------------------------------
     # TAB 2: PERBANDINGAN MODEL
     # --------------------------------------------------------
     with tab2:
-        st.header("📊 Perbandingan Performa Model")
+        st.header("Perbandingan Performa Model")
         
         # Evaluasi model
         metrics = evaluate_models(models)
@@ -322,11 +322,11 @@ def main():
                 st.metric("R² Score", f"{metrics['SVR']['R2']:.4f}")
                 
                 if metrics['SVR']['R2'] > 0.7:
-                    st.success("✅ Model performa BAIK")
+                    st.success("Model performa BAIK")
                 elif metrics['SVR']['R2'] > 0.5:
-                    st.warning("⚠️ Model performa CUKUP")
+                    st.warning("Model performa CUKUP")
                 else:
-                    st.error("❌ Model performa KURANG BAIK")
+                    st.error("Model performa KURANG BAIK")
             
             with col2:
                 st.subheader("ANN (MLPRegressor)")
@@ -335,11 +335,11 @@ def main():
                 st.metric("R² Score", f"{metrics['ANN']['R2']:.4f}")
                 
                 if metrics['ANN']['R2'] > 0.7:
-                    st.success("✅ Model performa BAIK")
+                    st.success("Model performa BAIK")
                 elif metrics['ANN']['R2'] > 0.5:
-                    st.warning("⚠️ Model performa CUKUP")
+                    st.warning("Model performa CUKUP")
                 else:
-                    st.error("❌ Model performa KURANG BAIK")
+                    st.error("Model performa KURANG BAIK")
             
             st.divider()
             
@@ -378,13 +378,13 @@ def main():
             st.plotly_chart(fig_r2, use_container_width=True)
         
         else:
-            st.info("ℹ️ Data evaluasi tidak tersedia.")
+            st.info("Data evaluasi tidak tersedia.")
     
     # --------------------------------------------------------
     # TAB 3: VISUALISASI
     # --------------------------------------------------------
     with tab3:
-        st.header("📈 Visualisasi Prediksi")
+        st.header("Visualisasi Prediksi")
         
         if 'predict' in st.session_state and st.session_state['predict']:
             inputs = st.session_state['inputs']
@@ -465,21 +465,21 @@ def main():
             }), use_container_width=True)
         
         else:
-            st.info("👈 Lakukan prediksi terlebih dahulu untuk melihat visualisasi.")
+            st.info("Lakukan prediksi terlebih dahulu untuk melihat visualisasi.")
     
     # --------------------------------------------------------
     # TAB 4: INFORMASI
     # --------------------------------------------------------
     with tab4:
-        st.header("ℹ️ Tentang Aplikasi")
+        st.header("Tentang Aplikasi")
         
         st.markdown("""
-        ### 📚 Deskripsi
+        ### Deskripsi
         
         Aplikasi ini merupakan sistem prediksi inflasi bulanan untuk 38 provinsi di Indonesia 
         pada kategori **Perlengkapan, Peralatan dan Pemeliharaan Rutin Rumah Tangga**.
         
-        ### 🤖 Model Machine Learning
+        ### Model Machine Learning
         
         Aplikasi ini menggunakan dua model machine learning:
         
@@ -492,7 +492,7 @@ def main():
            - Activation function: ReLU
            - Optimizer: Adam
         
-        ### 📊 Fitur yang Digunakan
+        ### Fitur yang Digunakan
         
         - Tahun
         - Bulan (1-12)
@@ -500,7 +500,7 @@ def main():
         - Subkategori (encoded)
         - Tipe data (bulanan/tahunan)
         
-        ### 🎯 Subkategori yang Tersedia
+        ### Subkategori yang Tersedia
         
         1. Total
         2. Furnitur Perlengkapan dan Karpet
@@ -510,13 +510,13 @@ def main():
         6. Peralatan dan Perlengkapan Perumahan dan Kebun
         7. Barang dan Layanan untuk Pemeliharaan Rumah Tangga Rutin
         
-        ### 📈 Metrik Evaluasi
+        ### Metrik Evaluasi
         
         - **RMSE** (Root Mean Squared Error): Semakin rendah semakin baik
         - **MAE** (Mean Absolute Error): Rata-rata kesalahan absolut
         - **R² Score**: Koefisien determinasi (0-1, semakin tinggi semakin baik)
         
-        ### 👨‍💻 Dikembangkan untuk Skripsi
+        ### Dikembangkan untuk Skripsi
         
         Aplikasi ini dikembangkan sebagai bagian dari penelitian skripsi 
         di bidang Data Science dan Machine Learning.
@@ -524,7 +524,7 @@ def main():
         
         # Model info
         st.divider()
-        st.subheader("📊 Informasi Teknis Model")
+        st.subheader("Informasi Teknis Model")
         
         col1, col2 = st.columns(2)
         
@@ -552,7 +552,7 @@ early_stopping=True
         
         # Dataset info
         st.divider()
-        st.subheader("📂 Informasi Dataset")
+        st.subheader("Informasi Dataset")
         
         st.markdown(f"""
         - **Sumber Data**: BPS (Badan Pusat Statistik)
@@ -569,7 +569,7 @@ early_stopping=True
     st.divider()
     st.markdown("""
     <div style="text-align: center; padding: 20px; color: #666;">
-        <p>📈 Prediksi Inflasi Bulanan 38 Provinsi Indonesia</p>
+        <p>Prediksi Inflasi Bulanan 38 Provinsi Indonesia</p>
         <p><small>Dikembangkan dengan Python, Streamlit, Scikit-learn | © 2026</small></p>
     </div>
     """, unsafe_allow_html=True)
